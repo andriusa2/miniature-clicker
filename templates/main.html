@@ -1,0 +1,26 @@
+<html>
+<head>
+<title>{{ title }}</title>
+<link rel='stylesheet' href='static/style.css' />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+</head>
+<body>
+<div class="header"></div>
+<div class="question_block">
+<div class="question">{{ question }}</div>
+<form>
+{{ for answer in answers }}
+<div class="answer">
+<input type="radio" name="answer" value="{{ answer.id }}" />
+<label for="{{ answer.id }}">{{ answer.text }}</label>
+</div>
+
+{{ endfor }}
+
+</form>
+</div>
+<div class="footer">
+&copy; 2014
+</div>
+</body>
+</html>
