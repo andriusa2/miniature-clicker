@@ -10,7 +10,7 @@ SECRET_KEY = 'This string will be replaced with a proper key in production.'
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'app.db')
 # SQLALCHEMY_DATABASE_URL = 'sqlite://'  # in memory
 DATABASE_CONNECT_OPTIONS = {}
-# SQLALCHEMY_ECHO = True
+SQLALCHEMY_ECHO = True
 
 THREADS_PER_PAGE = 8
 

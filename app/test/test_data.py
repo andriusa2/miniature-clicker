@@ -1,12 +1,13 @@
 from app import db
 
 # generate some fresh data
-db.drop_all()
-db.create_all()
 
 # add dummy data
 from app.admin.model import User as U
 from app.questions.model import Question as Q, Vote as V
+
+db.drop_all()
+db.create_all()
 import pickle
 
 db.session.add(U(username='abc', password='pwd', email='lol@lol'))
