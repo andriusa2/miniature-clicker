@@ -13,8 +13,7 @@ class User(db.Model):
     password = db.Column(db.String(120))
 
     # relations
-    votes = db.relationship('Vote', backref='user', lazy='dynamic')
-    questions = db.relationship('Question', backref='user', lazy='dynamic')
+    raised_questions = db.relationship('Question', backref='user', lazy='dynamic')
 
     def __init__(self, username, email, password):
         self.username = username
@@ -23,3 +22,9 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.username
+
+    def get_all_questions(self):
+        return self.questions.all()
+
+    def get_all_votes(self):
+        return self.votes.all()
