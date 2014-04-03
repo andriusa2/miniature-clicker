@@ -13,7 +13,7 @@ class User(db.Model):
     password = db.Column(db.String(120))
 
     # relations
-    raised_questions = db.relationship('Question', backref='user', lazy='dynamic')
+    raised_questions = db.relationship('Question', backref='owner', lazy='dynamic')
 
     def __init__(self, username, email, password):
         self.username = username

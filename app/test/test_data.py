@@ -39,13 +39,13 @@ def create_questions(us, n=5, l=2):
     now = datetime.datetime.now()
     for i in range(l):
         st = get_random_date(now)
-        qs.append(Q(user=u, question_data=pickle.dumps(get_dummy_question(i)), started=st, finishes=st+minute))
+        qs.append(Q(owner=u, question_data=pickle.dumps(get_dummy_question(i)), started=st, finishes=st+minute))
         db.session.add(qs[-1])
     for i in range(n-1):
         st = get_random_date(now)
-        qs.append(Q(user=us[(i+1)%len(us)], question_data=pickle.dumps(get_dummy_question(i)), started=st, finishes=st+minute))
+        qs.append(Q(owner=us[(i+1)%len(us)], question_data=pickle.dumps(get_dummy_question(i)), started=st, finishes=st+minute))
         db.session.add(qs[-1])
-    qs.append(Q(user=u, question_data=pickle.dumps(get_dummy_question(1)), started=now, finishes=now+minute*7))
+    qs.append(Q(owner=u, question_data=pickle.dumps(get_dummy_question(1)), started=now, finishes=now+minute*7))
     db.session.add(qs[-1])
     db.session.commit()
     return qs

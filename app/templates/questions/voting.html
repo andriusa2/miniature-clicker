@@ -1,18 +1,26 @@
 {% extends "questions/main.html" %}
 {% block content %}
     <div class="header"></div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
     <div class="question_block">
     <div class="question">{{ question["title"] }}</div>
     <form id="form" action="submit/" method="post" name="asd">
     {% for option in question["options"] %}
-        <div class="answer" id="answer-{{ loop.index0 }}" onclick="submit( {{ loop.index0 }} )">{{ option }}
+        <div class="option">
+        <a href="#" class="btn btn-primary btn-large btn-block {% if loop.index0 == question.last_vote_val %} active {% endif %}" onclick="submit({{ loop.index0 }})">{{ option }}</a>
         </div>
     {% endfor %}
-    <div> Last vote {{ question.last_vote }}</div>
     <div class="q_expiration">{{ question["finishes"] }}</div>
     <input id="voting" type="hidden" name="vote" value="-1" />
     <input type="hidden" name="question_id" value="{{ question["id"] }}" />
-    <input type="submit" style="display:none;" value="submit" />
     </form>
     </div>
 {% endblock %}

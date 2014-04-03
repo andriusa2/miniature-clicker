@@ -1,19 +1,17 @@
 {% extends "questions/main.html" %}
 {% block content %}
     <div class="header"></div>
-    {% for question in questions %}
     <div class="question_res">
     {% for option in question["options"] %}
         <div class="res_answer">{{ option }}</div>
     {% endfor %}
-    {% for vote in votes %}
+    {% for vote in question["votes"] %}
     <div class="vote">
-        Voter id: {% vote.voter_id %}<br/>
-        Question id: {% vote.question_id %}<br/>
-        Vote Val: {% vote.vote_val %}<br/>
-        Time: {% vote.time %}
+        Voter id: {{ vote.voter_id }}<br/>
+        Question id: {{ vote.question_id }}<br/>
+        Vote Val: {{ vote.vote_val }}<br/>
+        Time: {{ vote.time }}
     </div>
-    {% endfor %}
     <div class="q_chart" id="q_chart">
     </div>
     </div>

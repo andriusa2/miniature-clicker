@@ -7,6 +7,7 @@ Includes
 from app import db
 import pickle
 from datetime import datetime
+from app.admin.model import User
 
 
 class Question(db.Model):
@@ -59,6 +60,10 @@ class Question(db.Model):
             self._prep_data()
         return 0 <= val < len(self.data['options'])
 
+    def alter_finish(self, td):
+        self.finishes += td
+        db.session.commit()
+        
 
 class Vote(db.Model):
 
@@ -90,17 +95,23 @@ class Voter(db.Model):
     @staticmethod
     def can_vote(question, value=None):
         now = datetime.now()
-        if question.started >= now > question.finishes:
-            if value and question.valid_value(value):
+        if question.started <= now < question.finishes:
+            if value is None:
+                return True
+            if question.valid_value(value):
                 return True
         return False
 
     def add_vote(self, question, value):
         if question is None:
             raise ValueError("No question?")
-        if self.can_vote(question):
-            vote = Vote(question=question, vote_val=value, time=datetime.now(), voter=self)
-            db.session.add(vote)
+        if self.can_vote(question, value):
+            if self.has_voted(question):
+                v = self.last_vote(question)
+                v.vote_val = value
+            else:
+                vote = Vote(question=question, vote_val=value, time=datetime.now(), voter=self)
+                db.session.add(vote)
             db.session.commit()
         else:
             raise ValueError("User can't vote on this question")
