@@ -6,7 +6,7 @@ Includes
 
 from app import db
 import pickle
-# from app.admin.model import User
+from datetime import datetime
 
 
 class Question(db.Model):
@@ -25,23 +25,28 @@ class Question(db.Model):
     # all votes cast to this one - 1 -> many
     votes = db.relationship('Vote', backref='question', lazy='dynamic')
 
+    @staticmethod
+    def get_ongoing():
+        now = datetime.now()
+        return Question.query.filter(Question.finishes > now).filter(Question.started <= now).first()
+
+    @staticmethod
+    def get_all(not_started_only=False):
+        if not_started_only:
+            now = datetime.now()
+            return Question.query.filter(Question.started <= now).all()
+        return Question.query.all()
+
+    def get_data(self):
+        data = pickle.loads(self.question_data)
+        data.update({'started': self.started, 'finishes': self.finishes}.items())
+        return data
+
     def get_all_votes(self):
         return self.votes.all()
 
-    @staticmethod
-    def get_ongoing():
-        return Question.query.first()
-
-    def get_data(self):
-        return pickle.loads(self.question_data)
-
 
 class Vote(db.Model):
-    # __table_args__ = (
-    #     UniqueConstraint("id", "candidate_id"),
-    # )
-    # PK
-    #id = db.Column(db.Integer, primary_key=True)
 
     # FK
     voter_id = db.Column(db.Integer, db.ForeignKey('voter.id'), primary_key=True)

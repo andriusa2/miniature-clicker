@@ -13,7 +13,6 @@ class User(db.Model):
     password = db.Column(db.String(120))
 
     # relations
-    # votes = db.relationship('Vote', backref='user', lazy='dynamic')
     raised_questions = db.relationship('Question', backref='user', lazy='dynamic')
 
     def __init__(self, username, email, password):
@@ -29,6 +28,3 @@ class User(db.Model):
 
     def get_all_votes(self):
         return self.votes.all()
-
-    def get_voted_questions(self):
-        raise NotImplementedError
