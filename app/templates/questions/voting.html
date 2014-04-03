@@ -1,0 +1,15 @@
+{% extends "main.html" %}
+{% block content %}
+    <div class="header"></div>
+    <div class="question_block">
+    <div class="question">{{ question }}</div>
+    <form>
+    {{ for answer in answers }}
+    <div class="answer">
+    <input type="radio" name="answer" value="{{ answer.id }}" />
+    <label for="{{ answer.id }}">{{ answer.text }}</label>
+    </div>
+    {{ endfor }}
+    </form>
+    </div>
+{% endblock %}
