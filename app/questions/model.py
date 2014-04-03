@@ -21,7 +21,7 @@ class Question(db.Model):
     question_data = db.Column(db.PickleType)
     started = db.Column(db.DateTime)
     finishes = db.Column(db.DateTime)
-    
+
     data = None
     # relations
     # all votes cast to this one - 1 -> many
