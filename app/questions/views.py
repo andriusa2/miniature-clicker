@@ -24,13 +24,13 @@ def vote():
             if voter.has_voted(q):
                 question.update({'last_vote': voter.last_vote(q)})
 
-    return pp.pformat(question) # render_template('questions/vote.html', q)
+    return render_template('questions/voting.html', question = question) # pp.pformat(question)
 
-@mod.route('/submit', methods=['POST'])
+@mod.route('/submit/', methods=['POST'])
 def submit():
     question_id = (int)(request.form['question_id'])
     vote_val = (int)(request.form['vote'])
-    voter_id = request.cookies.get('voter_id')
+    voter_id = None # request.cookies.get('voter_id')
     if voter_id is None or Voter.query.get(voter_id) is None:
         # create one!
         voter = Voter()
@@ -39,7 +39,6 @@ def submit():
     else:
         voter = Voter.query.get(voter_id)
     voter.add_vote(Question.query.get(question_id), vote_val)
-
     return redirect(url_for(vote))
 
 @mod.route('/show/<question_id>', methods=['GET'])
@@ -53,4 +52,8 @@ def show(question_id):
     data.update({'votes': question.get_all_votes()})
     return str(data)
 
+     
+@mod.route('/test_voting')
+def test_template():
+    return render_template("questions/voting.html", title = "Voting")
 
