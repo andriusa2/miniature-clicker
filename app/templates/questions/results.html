@@ -1,0 +1,10 @@
+{% extends "questions/main.html" %}
+{% block content %}
+    <div class="header"></div>
+    {% for question in questions %}
+    <div class="question_res">
+    <div class="q_chart" id="q_chart">
+    </div>
+    </div>
+    {% endfor %}
+{% endblock %}
