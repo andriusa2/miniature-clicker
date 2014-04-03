@@ -21,6 +21,7 @@ class Question(db.Model):
     started = db.Column(db.DateTime)
     finishes = db.Column(db.DateTime)
 
+    data = None
     # relations
     # all votes cast to this one - 1 -> many
     votes = db.relationship('Vote', backref='question', lazy='dynamic')
@@ -37,13 +38,26 @@ class Question(db.Model):
             return Question.query.filter(Question.started <= now).all()
         return Question.query.all()
 
+    def _prep_data(self):
+        self.data = pickle.loads(self.question_data)
+        self.data.update({
+            'id': self.id,
+            'started': self.started,
+            'finishes': self.finishes
+        })
+
     def get_data(self):
-        data = pickle.loads(self.question_data)
-        data.update({'started': self.started, 'finishes': self.finishes}.items())
-        return data
+        if not self.data:
+            self._prep_data()
+        return self.data
 
     def get_all_votes(self):
         return self.votes.all()
+
+    def valid_value(self, val):
+        if not self.data:
+            self._prep_data()
+        return 0 <= val < len(self.data['options'])
 
 
 class Vote(db.Model):
@@ -64,3 +78,29 @@ class Voter(db.Model):
     # relations
     votes = db.relationship('Vote', backref='voter', lazy='dynamic')
 
+    def get_votes(self):
+        return self.votes.all()
+
+    def has_voted(self, question):
+        return self.last_vote(question) is not None
+
+    def last_vote(self, question):
+        return self.votes.filter(Vote.question == question).first()
+
+    @staticmethod
+    def can_vote(question, value=None):
+        now = datetime.now()
+        if question.started >= now > question.finishes:
+            if value and question.valid_value(value):
+                return True
+        return False
+
+    def add_vote(self, question, value):
+        if question is None:
+            raise ValueError("No question?")
+        if self.can_vote(question):
+            vote = Vote(question=question, vote_val=value, time=datetime.now(), voter=self)
+            db.session.add(vote)
+            db.session.commit()
+        else:
+            raise ValueError("User can't vote on this question")
