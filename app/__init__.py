@@ -43,7 +43,8 @@ def not_found(error):
 
 from app.questions.views import mod as questionsMod
 app.register_blueprint(questionsMod)
-
+from app.admin.views import mod as adminMod
+app.register_blueprint(adminMod)
 # Later on you'll import the other blueprints the same way:
 #from app.comments.views import mod as commentsModule
 #from app.posts.views import mod as postsModule

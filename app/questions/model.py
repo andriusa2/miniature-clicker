@@ -21,7 +21,7 @@ class Question(db.Model):
     question_data = db.Column(db.PickleType)
     started = db.Column(db.DateTime)
     finishes = db.Column(db.DateTime)
-
+    
     data = None
     # relations
     # all votes cast to this one - 1 -> many
@@ -63,7 +63,7 @@ class Question(db.Model):
     def alter_finish(self, td):
         self.finishes += td
         db.session.commit()
-        
+
 
 class Vote(db.Model):
 
