@@ -1,4 +1,38 @@
+div {
+    margin:0px;
+    padding:0px;
+    border-spacing:0px;
+}
+
 .container {
+    text-align:center;
+    margin-top:20px;
+    margin-bottom:20px;
     margin-left:auto;
     margin-right:auto;
+    border-radius:7px;
+    max-width:800px;
+    padding:0px;
+}
+.question {
+    background-color:#cccccc;
+    padding:10px;
+}
+.answer{
+    padding:8px;
+}
+.answer:nth-child(2n-1) {
+    background-color:#AAAAFF;
+}
+.answer:nth-child(2n) {
+    background-color:#CCCCFF;
+}
+.answer:hover, .answer:active{
+    background-color:#4444FF;
+    cursor:pointer;
+}
+.footer {
+    clear:both;
+    text-align:center;
+    color:#333;
 }
