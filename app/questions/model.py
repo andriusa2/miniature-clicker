@@ -26,7 +26,7 @@ class Question(db.Model):
     votes = db.relationship('Vote', backref='question', lazy='dynamic')
 
     def get_all_votes(self):
-        return list(self.votes)
+        return self.votes.all()
 
     @staticmethod
     def get_ongoing():
@@ -44,9 +44,18 @@ class Vote(db.Model):
     #id = db.Column(db.Integer, primary_key=True)
 
     # FK
-    voter_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    voter_id = db.Column(db.Integer, db.ForeignKey('voter.id'), primary_key=True)
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'), primary_key=True)
 
     # payload
     vote_val = db.Column(db.Integer)
     time = db.Column(db.DateTime)
+
+
+class Voter(db.Model):
+    # PK
+    id = db.Column(db.Integer, primary_key=True)
+
+    # relations
+    votes = db.relationship('Vote', backref='voter', lazy='dynamic')
+
