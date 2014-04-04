@@ -12,6 +12,11 @@ from app.admin.model import User
 from sqlalchemy import func
 
 
+def to_js_timestamp(time):
+    epoch = datetime.utcfromtimestamp(0)
+    delta = time - epoch
+    return delta.total_seconds() * 1000.0
+
 class Question(db.Model):
     # PK
     id = db.Column(db.Integer, primary_key=True)
@@ -67,6 +72,7 @@ class Question(db.Model):
             'id': self.id,
             'started': self.started,
             'finishes': self.finishes,
+            'finishes_js': to_js_timestamp(self.finishes),
             'vote_distr': self.get_vote_distribution(),
             'completed': self.completed(),
             'ongoing': self.ongoing(),

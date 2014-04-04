@@ -1,4 +1,14 @@
 {% extends "questions/main.html" %}
+{% block additional_scripts %}
+<link rel='stylesheet' href="{{ url_for("static", filename="jquery.countdown.css") }}"/>
+<script type="text/javascript" src="{{ url_for("static", filename="jquery.plugin.js") }}"></script>
+<script type="text/javascript" src="{{ url_for("static", filename="jquery.countdown.js") }}"></script>
+    <script>
+    $(function () {
+        $("#countdown").countdown({until: new Date({{ question.finishes_js }}), format: "MS"});
+    });
+    </script>
+{% endblock %}
 {% block content %}
     <div class="header"></div>
     <div class="question_block">
@@ -9,7 +19,7 @@
         <a href="#" class="btn btn-primary btn-large btn-block {% if loop.index0 == question.last_vote_val %} active {% endif %}" onclick="submit({{ loop.index0 }})">{{ option }}</a>
         </div>
     {% endfor %}
-    <div class="q_expiration">Question expires {{ question["finishes"] }}</div>
+    <div class="col-xs-4"><div class="col-xs-5">Question expires in </div><div class="col-xs-7"><div id="countdown"></div></div></div>
     <input id="voting" type="hidden" name="vote" value="-1" />
     <input type="hidden" name="question_id" value="{{ question["id"] }}" />
     </form>
