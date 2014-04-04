@@ -1,33 +1,36 @@
 from flask import Blueprint, request, url_for, make_response, render_template, flash, g, session, redirect
 from flask.ext.login import LoginManager, login_user, login_required, logout_user
 from flask_wtf import Form
-from wtforms import TextField, PasswordField
-from wtforms.validators import DataRequired
+from wtforms import TextField, PasswordField, validators
 
 
-from app import db
+from app import db, login_manager
 from app.questions.model import Question, User
 
 
 class LoginForm(Form):
-    username = TextField('Username', [DataRequired()])
-    password = PasswordField('Password', [DataRequired()])
+    username = TextField('Username', [])
+    password = PasswordField('Password', [])
 
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
         self.user = None
 
     def validate(self):
-        rv = Form.validate(self)
-        if not rv:
-            return False
+        # rv = Form.validate(self)
+        # if not rv:
+        #     return False
 
         user = User.query.filter_by(username=self.username.data).first()
         if user is None:
+            print('user not found')
+            self.username.errors = []
             self.username.errors.append('Unknown username')
+            print(self.username.errors)
             return False
 
         if not user.check_password(self.password.data):
+            self.password.errors = []
             self.password.errors.append('Invalid password')
             return False
 
@@ -36,13 +39,11 @@ class LoginForm(Form):
 
 mod = Blueprint('admin', __name__)
 
-login_manager = LoginManager()
-
 
 @login_manager.user_loader
 def load_user(userid):
-    return User.get(userid)
-
+    print(userid)
+    return User.query.get(int(userid))
 
 @mod.route("/add_user/", methods=["GET"])
 def add_user():
@@ -63,9 +64,9 @@ def login():
     if form.validate_on_submit():
         flash("Successfully logged in as %s" % form.user.username)
         login_user(form.user)
-        return redirect(request.args.get("next") or url_for("index"))
-    return ''.join(['<form action="login" method="post">Username: ', str(form.username), '<br/>Password: ', str(form.password),
-                    '<br/><input type="submit"></form>']) # render_template("admin/login.html", form=form)
+        return redirect(request.args.get("next") or url_for(".show_all"))
+    print(form.username.errors)
+    return render_template('admin/login.html', form=form) # render_template("admin/login.html", form=form)
 
 
 @mod.route("/logout")
@@ -74,13 +75,13 @@ def logout():
     logout_user()
     return redirect(url_for('.login'))
 
-@mod.route("/admin/show/all")
+@mod.route("/admin/show/all/")
 @login_required
 def show_all():
     questions = Question.get_all(not_started_only=False)
     if questions is None:
         return 'No questions found'
-    data = map(lambda a: a.get_data(), questions)
+    data = list(map(lambda a: a.get_data(), questions))
     return str(data)
 
 @mod.route("/admin/edit/<qid>", methods=['GET'])

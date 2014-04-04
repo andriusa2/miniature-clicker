@@ -5,6 +5,7 @@ from app.questions.model import Question, Voter
 
 mod = Blueprint('questions', __name__)
 
+
 @mod.route('/')
 def vote():
     # get the current ongoing quiz
@@ -24,10 +25,11 @@ def vote():
 
     return render_template('questions/voting.html', question=question)
 
+
 @mod.route('/submit/', methods=['POST'])
 def submit():
-    question_id = (int)(request.form['question_id'])
-    vote_val = (int)(request.form['vote'])
+    question_id = int(request.form['question_id'])
+    vote_val = int(request.form['vote'])
     voter_id = request.cookies.get('voter_id')
     set_cookie = False
     if voter_id is None or Voter.query.get(voter_id) is None:
@@ -52,7 +54,6 @@ def submit():
     return redirect(url_for('.vote'))
 
 
-@mod.route('/show/<question_id>', methods=['GET'])
 @mod.route('/show/<question_id>/', methods=['GET'])
 def show(question_id):
     question = Question.query.get(int(question_id))
@@ -69,11 +70,5 @@ def show_all():
     questions = Question.get_all(not_started_only=True)
     if questions is None:
         return 'No questions found'
-    data = map(lambda a: a.get_data(), questions)
+    data = list(map(lambda a: a.get_data(), questions))
     return str(data)
-
-
-@mod.route('/test_voting')
-def test_template():
-    return render_template("questions/voting.html", title = "Voting")
-

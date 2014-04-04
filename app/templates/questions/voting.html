@@ -1,15 +1,6 @@
 {% extends "questions/main.html" %}
 {% block content %}
     <div class="header"></div>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
     <div class="question_block">
     <div class="question">{{ question["title"] }}</div>
     <form id="form" action="submit/" method="post" name="asd">

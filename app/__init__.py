@@ -5,9 +5,12 @@ import sys
 
 from flask import Flask, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 
 app = Flask(__name__)
 app.config.from_object('config')
+
+login_manager = LoginManager(app=app)
 
 db = SQLAlchemy(app)
 
