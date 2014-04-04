@@ -156,6 +156,11 @@ class Question(db.Model):
             'correct': None
         }
 
+    def start(self):
+        if not self.ongoing():
+            self.started = datetime.now()
+            self.finishes += datetime.now() - datetime.min
+            db.session.commit()
 
 class Vote(db.Model):
 
