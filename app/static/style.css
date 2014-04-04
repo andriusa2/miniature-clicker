@@ -71,12 +71,22 @@ dt label {
     padding:7px;
     display:block;
     color:#000;
+    float:left;
+    width:90%;
+}
+.res_q_edit, a.res_q_edit:active, a.res_q_edit:visited {
+    padding:7px;
+    display:block;
+    color:#000;
+    float:left;
+    width:10%;
 }
 .res_answer{
     padding:7px;
     background-color:#FFEEEE;
     border:1px solid #000;
     border-top:none;
+    background-color:none;
 }
 .res_correct{
     background-color:#DDFFDD;
@@ -85,13 +95,20 @@ dt label {
     text-decoration:underline;
     color:#000;
 }
-.res_q_name:nth-child(2n-1){
+.res_block:nth-child(2n-1){
     background-color:#99FF99;
 }
-.res_q_name:nth-child(2n){
+.res_block:nth-child(2n){
     background-color:#BBFFBB;
+}
+.res_q_edit:hover {
+    text-decoration:underline;
+    color:#000;
 }
 .nav {
     padding:6px;
     text-align:left;
+}
+.nav a {
+    padding-right:15px;
 }

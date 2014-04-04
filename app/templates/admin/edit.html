@@ -1,0 +1,41 @@
+{% extends "questions/main.html" %}
+
+{% block content %}
+<div class="nav"><a href="/admin/show/all">To complete question management list</a></div>
+<div class="add_question_box">
+    <form method="post" action="/admin/edit/{{ question.id }}/">
+        <label for="title">Question summary:</label>
+        <input id="title" type="text" name="title" class="form-control" value="{{ question.title }}"/>
+        <label for="description">Full text:</label>
+        <textarea id="description" name="description" class="form-control" rows="10">{{ question.desc }}</textarea>
+        <fieldset>
+            <legend>Options:</legend>
+            <div class="row">
+                <div class="col-xs-3">
+                    <input name="options" type="text" value="{{ question.options[0] }} " class="form-control" />
+                </div>
+                <div class="col-xs-3">
+                    <input name="options" type="text" value="{{ question.options[1] }}" class="form-control" />
+                </div>
+                <div class="col-xs-3">
+                    <input name="options" type="text" value="{{ question.options[2] }}" class="form-control" />
+                </div>
+                <div class="col-xs-3">
+                    <input name="options" type="text" value="{{ question.options[3] }}" class="form-control" />
+                </div>
+            </div>
+        </fieldset>
+        <label for="correct">Correct option</label>
+        <select name="correct" id="correct" class="form-control">
+            <option value="-1" selected>None</option>
+            <option value="0">{{ question.options[0] }}</option>
+            <option value="1">{{ question.options[1] }}</option>
+            <option value="2">{{ question.options[2] }}</option>
+            <option value="3">{{ question.options[3] }}</option>
+        </select>
+        <label for="duration">Question duration from now (seconds)</label>
+        <input id="duration" name="duration" value="60" class="form-control"/>
+        <input type="submit" value="Save question" class="btn btn-primary">
+    </form>
+</div>
+{% endblock %}
