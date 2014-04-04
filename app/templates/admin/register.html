@@ -1,0 +1,15 @@
+{% extends "questions/main.html" %}
+{% from "admin/formhelpers.html" import render_field %}
+
+
+{% block content %}
+<form method="post" action="/add_user/">
+  <dl>
+    {{ render_field(form.username) }}
+    {{ render_field(form.password) }}
+    {{ render_field(form.confirm) }}
+    {{ render_field(form.email) }}
+  </dl>
+  <input type="submit" value="Register">
+</form>
+{% endblock %}
