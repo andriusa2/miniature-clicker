@@ -1,6 +1,5 @@
 {% extends "questions/main.html" %}
 {% block content %}
-    <div class="nav"><a href="/show/all">To complete question list</a></div>
     <div class="question">{{ question.title }}</div>
     <div class="question_res">
     {% for option in question.options %}

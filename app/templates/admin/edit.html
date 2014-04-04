@@ -1,7 +1,6 @@
 {% extends "questions/main.html" %}
 
 {% block content %}
-<div class="nav"><a href="/admin/show/all">To complete question management list</a></div>
 <div class="add_question_box">
     <form method="post" action="/admin/edit/{{ question.id }}/">
         <label for="title">Question summary:</label>

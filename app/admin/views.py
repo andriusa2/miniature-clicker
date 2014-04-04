@@ -26,7 +26,7 @@ def add_user():
         db.session.commit()
         flash('Successfully registered %s' % form.username.data)
         return redirect(url_for('.add_user', methods=['GET']))
-    return render_template('admin/register.html', form=form)
+    return render_template('admin/register.html', form=form, logged_in=current_user.is_authenticated())
 
 
 @mod.route("/login", methods=["GET", "POST"])
@@ -36,7 +36,7 @@ def login():
         flash("Successfully logged in as %s" % form.user.username)
         login_user(form.user)
         return redirect(request.args.get("next") or url_for(".show_all"))
-    return render_template('admin/login.html', form=form) # render_template("admin/login.html", form=form)
+    return render_template('admin/login.html', form=form, logged_in=current_user.is_authenticated()) # render_template("admin/login.html", form=form)
 
 
 @mod.route("/logout")
@@ -52,7 +52,7 @@ def show_all():
     if questions is None:
         return 'No questions found'
     data = list(map(lambda a: a.get_data(), questions))
-    return render_template("admin/all_q.html",questions=data)
+    return render_template("admin/all_q.html",questions=data, logged_in=current_user.is_authenticated())
 
 @mod.route("/admin/edit/<qid>/", methods=['GET'])
 @login_required
@@ -62,7 +62,7 @@ def show_edit(qid):
         flash('Error: question not found')
         return redirect(url_for('.show_all'))
     data = data.get_data()
-    return render_template("/admin/edit.html", question=data)
+    return render_template("admin/edit.html", question=data, logged_in=current_user.is_authenticated())
 
 
 @mod.route("/admin/test_edit/<qid>/<field>/<val>/", methods=['GET'])
@@ -85,8 +85,16 @@ def submit_edit(qid):
     if data is None:
         flash('Error: question not found')
         return "No question found", 500
-    for field, val in request.form.iteritems():
-        data.update_field(field, val, delayed_commit=True)
+    # full update
+    finishes = datetime.datetime.min + datetime.timedelta(seconds=int(request.form['duration']))
+    started = None
+    options = request.form.getlist('options')
+    data.finishes = finishes
+    data.started = started
+    data.update_field('options', options, delayed_commit=True)
+    data.update_field('correct', request.form['correct'], delayed_commit=True)
+    data.update_field('title', request.form['title'], delayed_commit=True)
+    data.update_field('description', request.form['description'], delayed_commit=True)
     db.session.commit()
     return "Set successfully"
 
@@ -109,7 +117,7 @@ def add_question():
             flash('Question added successfully')
             return redirect(url_for('.show_all'))
         flash('Not enough data provided')
-    return render_template('admin/add_question.html')
+    return render_template('admin/add_question.html', logged_in=current_user.is_authenticated())
 
 
 

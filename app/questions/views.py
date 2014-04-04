@@ -1,5 +1,5 @@
 from flask import Blueprint, request, url_for, make_response, render_template, flash, g, session, redirect
-
+from flask.ext.login import current_user
 from app import db
 from app.questions.model import Question, Voter
 
@@ -23,7 +23,7 @@ def vote():
             if voter.has_voted(q):
                 question.update({'last_vote_val': voter.last_vote(q).vote_val})
 
-    return render_template('questions/voting.html', question=question)
+    return render_template('questions/voting.html', question=question, logged_in=current_user.is_authenticated())
 
 
 @mod.route('/submit/', methods=['POST'])
@@ -62,7 +62,7 @@ def show(question_id):
         return 'Not found'
     # gather votes
     data = question.get_data()
-    return render_template('questions/results.html', question=data)
+    return render_template('questions/results.html', question=data, logged_in=current_user.is_authenticated())
 
 
 @mod.route('/show/all/', methods=['GET'])
@@ -71,4 +71,4 @@ def show_all():
     if questions is None:
         return 'No questions found'
     data = list(map(lambda a: a.get_data(), questions))
-    return render_template('questions/all_q.html', questions = data) # str(data)
+    return render_template('questions/all_q.html', questions = data, logged_in=current_user.is_authenticated()) # str(data)
