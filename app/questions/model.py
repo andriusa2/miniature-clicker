@@ -47,8 +47,13 @@ class Question(db.Model):
             'id': self.id,
             'started': self.started,
             'finishes': self.finishes,
-            'vote_distr': self.get_vote_distribution()
+            'vote_distr': self.get_vote_distribution(),
+            'completed': self.completed(),
         }
+
+    def completed(self):
+        now = datetime.now()
+        return now > self.finishes and self.started is not None
 
     def get_data(self):
         if not self.data:
