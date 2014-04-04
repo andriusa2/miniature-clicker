@@ -10,3 +10,4 @@ Werkzeug==0.9.4
 gunicorn==18.0
 itsdangerous==0.24
 python-bcrypt==0.3.2
+psycopg2==2.5.2
