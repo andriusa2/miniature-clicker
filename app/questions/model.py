@@ -42,18 +42,28 @@ class Question(db.Model):
         return Question.query.all()
 
     def _prep_data(self):
-        self.data = pickle.loads(self.question_data)
-        self.data.update({
+        self._data = pickle.loads(self.question_data)
+        self.data = {
             'id': self.id,
             'started': self.started,
             'finishes': self.finishes,
-            'vote_distr': self.get_vote_distribution()
-        })
+            'vote_distr': self.get_vote_distribution(),
+            'completed': self.completed(),
+            'ongoing': self.ongoing(),
+        }
 
+    def completed(self):
+        now = datetime.now()
+        return now > self.finishes and self.started is not None
+
+    def ongoing(self):
+        now = datetime.now()
+        return self.started >= now > self.finishes
+    
     def get_data(self):
         if not self.data:
             self._prep_data()
-        return self.data
+        return dict(list(self.data.items()) + list(self._data.items()))
 
     def get_all_votes(self):
         return self.votes.all()
@@ -87,6 +97,28 @@ class Question(db.Model):
         })
         return retval
 
+    def update_field(self, field, val, delayed_commit=False):
+        # TODO: validate if that's viable update
+        self.get_data()
+        fields = field.split('.')
+        fs = []
+        for f in fields:
+            try:
+                fs.append(int(f))
+            except:
+                fs.append(f)
+        root = self._data
+        for f in fs[:-1]:
+            try:
+                root = root[f]
+            except:
+                print(root.keys())
+                print("Field %s not found[%s]" % (field, f))
+                return
+        root[fs[-1]] = val
+        self.question_data = pickle.dumps(self.data)
+        if not delayed_commit:
+            db.session.commit()
 
 
 class Vote(db.Model):
@@ -133,6 +165,7 @@ class Voter(db.Model):
             if self.has_voted(question):
                 v = self.last_vote(question)
                 v.vote_val = value
+                v.time = datetime.now()
             else:
                 vote = Vote(question=question, vote_val=value, time=datetime.now(), voter=self)
                 db.session.add(vote)
