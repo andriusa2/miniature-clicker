@@ -6,7 +6,7 @@ Questions
 </div>
     {% for question in questions|reverse %}
         <div class="res_block">
-        <a href="/admin/show/{{ question.id }}/" class="res_q_name {% if question.ongoing %}q_not_completed{% else %}q_completed{% endif %}" alt="{{ question.title }}">
+        <a href="/admin/edit/{{ question.id }}/" class="res_q_name {% if question.ongoing %}q_not_completed{% else %}q_completed{% endif %}" alt="{{ question.title }}">
         {{ question.title }} <br/>Status: {% if question.ongoing %}Not completed{% else %}Completed{% endif %}, Finish: {{ question.finishes }}
         </a><a href="/admin/edit/{{ question.id }}/" class="res_q_edit"><strong>EDIT</strong></a>
         <div style="clear: both;"></div>
