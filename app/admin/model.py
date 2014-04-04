@@ -10,7 +10,7 @@ class User(db.Model):
 
     # Data
     username = db.Column(db.String(80), unique=True)
-    email = db.Column(db.String(120), unique=True)
+    email = db.Column(db.String(120))
     password = db.Column(db.String(120))
 
     # relations
@@ -38,6 +38,9 @@ class User(db.Model):
 
     @staticmethod
     def hash_pwd(pwd):
+        # if isinstance(pwd, unicode):
+        #     pwd = pwd.encode('u8')
+        # pwd = str(pwd)
         return bcrypt.hashpw(pwd, bcrypt.gensalt(12))
 
     def is_active(self):

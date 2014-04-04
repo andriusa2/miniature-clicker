@@ -1,41 +1,12 @@
 from flask import Blueprint, request, url_for, make_response, render_template, flash, g, session, redirect
 from flask.ext.login import LoginManager, login_user, login_required, logout_user
-from flask_wtf import Form
-from wtforms import TextField, PasswordField, validators
+
+from app.admin.forms import LoginForm, RegistrationForm
 
 
 from app import db, login_manager
 from app.questions.model import Question, User
 
-
-class LoginForm(Form):
-    username = TextField('Username', [])
-    password = PasswordField('Password', [])
-
-    def __init__(self, *args, **kwargs):
-        Form.__init__(self, *args, **kwargs)
-        self.user = None
-
-    def validate(self):
-        # rv = Form.validate(self)
-        # if not rv:
-        #     return False
-
-        user = User.query.filter_by(username=self.username.data).first()
-        if user is None:
-            print('user not found')
-            self.username.errors = []
-            self.username.errors.append('Unknown username')
-            print(self.username.errors)
-            return False
-
-        if not user.check_password(self.password.data):
-            self.password.errors = []
-            self.password.errors.append('Invalid password')
-            return False
-
-        self.user = user
-        return True
 
 mod = Blueprint('admin', __name__)
 
@@ -45,17 +16,17 @@ def load_user(userid):
     print(userid)
     return User.query.get(int(userid))
 
-@mod.route("/add_user/", methods=["GET"])
+@mod.route("/add_user/", methods=["GET", "POST"])
+@login_required
 def add_user():
-    return "A form for adding an user"
-
-@mod.route("/add_user/", methods=["POST"])
-def add_user_submit():
-    username = request.form['username']
-    password = request.form['password']
-    #password =
-    email = request.form['email']
-    user = User(username=username, password=password, email=email)
+    form = RegistrationForm(request.form)
+    if form.validate_on_submit():
+        user = User(username=form.username.data, password=form.password.data, email=form.email.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Successfully registered %s' % form.username.data)
+        return redirect(url_for('.add_user', methods=['GET']))
+    return render_template('admin/register.html', form=form)
 
 
 @mod.route("/login", methods=["GET", "POST"])
@@ -65,7 +36,6 @@ def login():
         flash("Successfully logged in as %s" % form.user.username)
         login_user(form.user)
         return redirect(request.args.get("next") or url_for(".show_all"))
-    print(form.username.errors)
     return render_template('admin/login.html', form=form) # render_template("admin/login.html", form=form)
 
 

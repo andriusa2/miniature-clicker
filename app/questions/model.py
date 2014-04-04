@@ -6,8 +6,10 @@ Includes
 
 from app import db
 import pickle
+from collections import defaultdict
 from datetime import datetime
 from app.admin.model import User
+from sqlalchemy import func
 
 
 class Question(db.Model):
@@ -44,7 +46,8 @@ class Question(db.Model):
         self.data.update({
             'id': self.id,
             'started': self.started,
-            'finishes': self.finishes
+            'finishes': self.finishes,
+            'vote_distr': self.get_vote_distribution()
         })
 
     def get_data(self):
@@ -63,6 +66,27 @@ class Question(db.Model):
     def alter_finish(self, td):
         self.finishes += td
         db.session.commit()
+
+    def get_vote_distribution(self):
+        votes = self.get_all_votes()
+        distr = defaultdict(lambda: 0)
+        for vote in votes:
+            distr[vote.vote_val] += 1
+
+        sum_votes = sum(distr.values())
+
+        retval = {
+            opt: {
+                'percentage': float(v)/float(sum_votes),
+                'votes': v
+            } for opt, v in distr.items()
+        }
+        retval.update({
+            'total': sum_votes,
+            'distr': list(votes)
+        })
+        return retval
+
 
 
 class Vote(db.Model):

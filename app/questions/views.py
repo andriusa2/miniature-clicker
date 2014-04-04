@@ -44,10 +44,11 @@ def submit():
         voter.add_vote(Question.query.get(question_id), vote_val)
     except Exception as e:
         print(e)
+        flash("Your vote couldn't be registered")
+    else:
+        flash("You have successfully voted")
 
-    flash("You have successfully voted")
     if set_cookie:
-        print(url_for('.vote'))
         resp = make_response(redirect(url_for('.vote')))
         resp.set_cookie('voter_id', str(voter.id))
         return resp
@@ -61,7 +62,6 @@ def show(question_id):
         return 'Not found'
     # gather votes
     data = question.get_data()
-    data.update({'votes': question.get_all_votes()})
     return render_template('questions/results.html', question=data)
 
 
