@@ -1,19 +1,54 @@
 {% extends "questions/main.html" %}
 {% block content %}
-    <div class="header"></div>
+    <div class="nav"><a href="/show/all">To complete question list</a></div>
+    <div class="question">{{ question.title }}</div>
     <div class="question_res">
-    {% for option in question["options"] %}
-        <div class="res_answer">{{ option }}</div>
+    {% for option in question.options %}
+        <div class="res_answer {% if loop.index0 == question.correct %}res_correct{% endif %}">{{ option }}</div>
     {% endfor %}
-    {% for vote in question["votes"] %}
-    <div class="vote">
-        Voter id: {{ vote.voter_id }}<br/>
-        Question id: {{ vote.question_id }}<br/>
-        Vote Val: {{ vote.vote_val }}<br/>
-        Time: {{ vote.time }}
+    <div id="chart_div" style="max-width: 800px; height: 500px;"></div>
+    <div class="q_info">
+        <ul>
+            <li>People voted: {{ question.vote_distr.total }}</li>
+            <li>Start: {{ question.started }}</li>
+            <li>Finish: {{ question.finishes }}</li>
+            <li>Is Completed: {{ question.completed }}</li>
+        </ul>
     </div>
-    <div class="q_chart" id="q_chart">
     </div>
-    </div>
-    {% endfor %}
+{% endblock %}
+
+{% block additional_scripts %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load('visualization', '1', {packages: ['corechart']});
+    </script>
+    <script type="text/javascript">
+      function drawVisualization() {
+        // Some raw data (not necessarily accurate)
+        var data = google.visualization.arrayToDataTable([
+          ['Answer', 'Number of answers'],
+          {% for vote in question.vote_distr.vote_split %}
+            ["{{ question.options[vote.option] }}", {{ vote.votes }}],
+          {% endfor %}
+        ]);
+
+        var options = {
+          title : 'Vote results',
+          vAxis: {title: "Votes",
+              viewWindow:{
+                min:0,
+              }
+          },
+          hAxis: {title: "Options"},
+          seriesType: "bars",
+          legend: 'none',
+          series: {5: {type: "line"}}
+        };
+
+        var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+      google.setOnLoadCallback(drawVisualization);
+    </script>
 {% endblock %}

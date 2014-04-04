@@ -9,13 +9,13 @@ ul {
 
 .container {
     text-align:center;
-    margin-top:20px;
     margin-bottom:20px;
     margin-left:auto;
     margin-right:auto;
     border-radius:7px;
     max-width:800px;
     padding:0px;
+    margin-top:10px;
 }
 .question {
     background-color:#dddddd;
@@ -64,12 +64,22 @@ dt label {
     background-color:#dddddd;
     padding:10px;
     font-family:Georgia;
+    margin-top:10px;
     border:1px solid #000000;
 }
 .res_q_name, a.res_q_name:active, a.res_q_name:visited {
     padding:7px;
     display:block;
     color:#000;
+}
+.res_answer{
+    padding:7px;
+    background-color:#FFEEEE;
+    border:1px solid #000;
+    border-top:none;
+}
+.res_correct{
+    background-color:#DDFFDD;
 }
 .res_q_name:hover {
     text-decoration:underline;
@@ -80,4 +90,8 @@ dt label {
 }
 .res_q_name:nth-child(2n){
     background-color:#BBFFBB;
+}
+.nav {
+    padding:6px;
+    text-align:left;
 }
