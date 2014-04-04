@@ -6,7 +6,7 @@
     {% for option in question["options"] %}
         <div class="res_answer">{{ option }}</div>
     {% endfor %}
-    {% for vote in question["votes"] %}
+    {% for vote in question.vote_distr.distr %}
     <div class="vote">
         Voter id: {{ vote.voter_id }}<br/>
         Question id: {{ vote.question_id }}<br/>
@@ -17,4 +17,32 @@
     </div>
     </div>
     {% endfor %}
+{% endblock %}
+
+{% block additional_scripts %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load('visualization', '1', {packages: ['corechart']});
+    </script>
+    <script type="text/javascript">
+      function drawVisualization() {
+        // Some raw data (not necessarily accurate)
+        var data = google.visualization.arrayToDataTable([
+          ['Answer', 'Number of answers'],
+          [{{ question[3] }},  614.6]
+        ]);
+
+        var options = {
+          title : 'Monthly Coffee Production by Country',
+          vAxis: {title: "Cups"},
+          hAxis: {title: "Month"},
+          seriesType: "bars",
+          series: {5: {type: "line"}}
+        };
+
+        var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+      google.setOnLoadCallback(drawVisualization);
+    </script>
 {% endblock %}
