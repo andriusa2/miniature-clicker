@@ -1,26 +1,27 @@
 {% extends "questions/main.html" %}
 
 {% block content %}
+<div class="nav"><a href="/admin/show/all">To complete question management list</a></div>
 <div class="add_question_box">
     <form method="post" action="/admin/add_question/">
         <label for="title">Question summary:</label>
         <input id="title" type="text" name="title" class="form-control" />
         <label for="description">Full text:</label>
-        <textarea id="description" name="description" class="form-control" rows="20"></textarea>
+        <textarea id="description" name="description" class="form-control" rows="10"></textarea>
         <fieldset>
             <legend>Options:</legend>
             <div class="row">
                 <div class="col-xs-3">
-                    <input name="options" type="text" value="Option1" class="form-control" />
+                    <input name="options" type="text" value="Option 1" class="form-control" />
                 </div>
                 <div class="col-xs-3">
-                    <input name="options" type="text" value="Option2" class="form-control" />
+                    <input name="options" type="text" value="Option 2" class="form-control" />
                 </div>
                 <div class="col-xs-3">
-                    <input name="options" type="text" value="Option3" class="form-control" />
+                    <input name="options" type="text" value="Option 3" class="form-control" />
                 </div>
                 <div class="col-xs-3">
-                    <input name="options" type="text" value="Option4" class="form-control" />
+                    <input name="options" type="text" value="Option 4" class="form-control" />
                 </div>
             </div>
         </fieldset>

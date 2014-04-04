@@ -1,10 +1,14 @@
 {% extends "questions/main.html" %}
 {% block content %}
+<div class="nav"><a href="/">Back to current vote</a></div>
 <div class="results_header">
 Results of questions
 </div>
     {% for question in questions|reverse %}
+    <div class="res_block">
         <a href="/show/{{ question.id }}/" class="res_q_name {% if question.ongoing %}q_not_completed{% else %}q_completed{% endif %}" alt="{{ question.title }}">
         {{ question.title }} <br/>Status: {% if question.ongoing %}Not completed{% else %}Completed{% endif %}, Finish: {{ question.finishes }}</a>
+        <div style="clear: both;"></div>
+    </div>
     {% endfor %}
 {% endblock %}

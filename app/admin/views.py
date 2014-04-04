@@ -52,7 +52,7 @@ def show_all():
     if questions is None:
         return 'No questions found'
     data = list(map(lambda a: a.get_data(), questions))
-    return str(data)
+    return render_template("admin/all_q.html",questions=data)
 
 @mod.route("/admin/edit/<qid>/", methods=['GET'])
 @login_required
@@ -62,7 +62,7 @@ def show_edit(qid):
         flash('Error: question not found')
         return redirect(url_for('.show_all'))
     data = data.get_data()
-    return str(data)
+    return render_template("/admin/edit.html", question=data)
 
 
 @mod.route("/admin/test_edit/<qid>/<field>/<val>/", methods=['GET'])
