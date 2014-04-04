@@ -30,7 +30,7 @@ class Question(db.Model):
     # all votes cast to this one - 1 -> many
     votes = db.relationship('Vote', backref='question', lazy='dynamic')
 
-    def __init__(self, title, options, correct, owner, started, finishes):
+    def __init__(self, title, options, correct, owner, started, finishes, *args, **kwargs):
         self.question_data = pickle.dumps({
             'title': title,
             'options': options,
@@ -40,7 +40,11 @@ class Question(db.Model):
         self.started = started
         self.finishes = finishes
 
-
+    @staticmethod
+    def get_fields():
+        return {
+            'title', 'options', 'correct', 'duration', 'description'
+        }
     @staticmethod
     def get_ongoing():
         now = datetime.now()
@@ -102,15 +106,15 @@ class Question(db.Model):
         sum_votes = sum(distr.values())
 
         retval = {
-            opt: {
-                'percentage': float(v)/float(sum_votes),
-                'votes': v
-            } for opt, v in distr.items()
-        }
-        retval.update({
             'total': sum_votes,
-            'distr': list(votes)
-        })
+            'distr': list(votes),
+            'vote_split': [{
+                'percentage': float(v)/float(sum_votes),
+                'votes': v,
+                'option': opt
+                } for opt, v in distr.items()
+            ]
+        }
         return retval
 
     def update_field(self, field, val, delayed_commit=False):
