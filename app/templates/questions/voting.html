@@ -1,24 +1,23 @@
 {% extends "questions/main.html" %}
 {% block additional_scripts %}
-<link rel='stylesheet' href="{{ url_for("static", filename="jquery.countdown.css") }}"/>
 <script type="text/javascript" src="{{ url_for("static", filename="jquery.plugin.js") }}"></script>
 <script type="text/javascript" src="{{ url_for("static", filename="jquery.countdown.js") }}"></script>
     <script>
     $(function () {
-        $("#countdown").countdown({until: new Date({{ question.finishes_js }}), format: "MS"});
+        $("#countdown").countdown({until: new Date({{ question.finishes_js }}), format: "S", compact: true});
     });
     </script>
 {% endblock %}
 {% block content %}
     <div class="question_block">
-    <div class="question">{{ question["title"] }}</div>
+    <div class="row"><div class="question col-xs-9 col-md-10">{{ question["title"] }}</div>
+    <div class="col-xs-3 col-md-2"><div id="countdown" class=""></div><div> seconds left</div></div></div>
     <form id="form" action="submit/" method="post" name="asd">
     {% for option in question["options"] %}
         <div class="option">
         <a href="#" class="btn btn-primary btn-large btn-block {% if loop.index0 == question.last_vote_val %} active {% endif %}" onclick="submit({{ loop.index0 }})">{{ option }}</a>
         </div>
     {% endfor %}
-    <div class="col-xs-4"><div class="col-xs-5">Question expires in </div><div class="col-xs-7"><div id="countdown"></div></div></div>
     <input id="voting" type="hidden" name="vote" value="-1" />
     <input type="hidden" name="question_id" value="{{ question["id"] }}" />
     </form>

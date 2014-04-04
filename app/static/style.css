@@ -18,10 +18,8 @@ ul {
     margin-top:10px;
 }
 .question {
-    background-color:#dddddd;
+    text-align:justify;
     padding:10px;
-    font-family:Georgia;
-    border:1px solid #000000;
 }
 .option{
     padding:8px;
