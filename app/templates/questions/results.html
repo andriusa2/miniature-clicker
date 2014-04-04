@@ -1,5 +1,6 @@
 {% extends "questions/main.html" %}
 {% block content %}
+    {{ question }}
     <div class="header"></div>
     <div class="question_res">
     {% for option in question["options"] %}

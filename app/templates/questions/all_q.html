@@ -5,6 +5,6 @@ Results of questions
 </div>
     {% for question in questions %}
         <a href="/show/{{ question.id }}/" class="res_q_name {% if question.ongoing %}q_not_completed{% else %}q_completed{% endif %}" alt="{{ question.title }}">
-        {{ question.title }} <br/>Status: {{ question.ongoing }} Finish: {{ question.finishes }}</a>
+        {{ question.title }} <br/>Status: {% if question.ongoing %}Not completed{% else %}Completed{% endif %}, Finish: {{ question.finishes }}</a>
     {% endfor %}
 {% endblock %}
