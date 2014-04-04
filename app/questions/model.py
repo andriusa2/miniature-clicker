@@ -87,7 +87,7 @@ class Question(db.Model):
         })
         return retval
 
-    def update_field(self, field, val):
+    def update_field(self, field, val, delayed_commit=False):
         # TODO: validate if that's viable update
         self.get_data()
         fields = field.split('.')
@@ -107,7 +107,8 @@ class Question(db.Model):
                 return
         root[fs[-1]] = val
         self.question_data = pickle.dumps(self.data)
-        db.session.commit()
+        if not delayed_commit:
+            db.session.commit()
 
 
 class Vote(db.Model):

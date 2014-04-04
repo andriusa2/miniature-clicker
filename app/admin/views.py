@@ -85,8 +85,9 @@ def submit_edit(qid):
     if data is None:
         flash('No such question exists')
         return "No question found", 500
-    field, val = request.form['field'], request.form['val']
-    data.update_field(field, val)
+    for field, val in request.form.iteritems():
+        data.update_field(field, val, delayed_commit=True)
+    db.session.commit()
     return "Set successfully"
     # TODO: copy over data, commit db
 
