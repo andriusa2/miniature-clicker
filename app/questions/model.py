@@ -74,7 +74,7 @@ class Question(db.Model):
 
     def ongoing(self):
         now = datetime.now()
-        return self.started >= now > self.finishes
+        return self.started <= now < self.finishes
 
     def get_data(self):
         if not self.data:
