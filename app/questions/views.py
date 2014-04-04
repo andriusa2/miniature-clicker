@@ -61,7 +61,6 @@ def show(question_id):
         return 'Not found'
     # gather votes
     data = question.get_data()
-    data.update({'votes': question.get_all_votes()})
     return render_template('questions/results.html', question=data)
 
 
