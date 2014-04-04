@@ -1,13 +1,36 @@
 {% extends "questions/main.html" %}
 {% block content %}
-<div class="results_header">
-Results of questions
-</div>
-    {% for question in questions|reverse %}
-    <div class="res_block">
-        <a href="/show/{{ question.id }}/" class="res_q_name {% if question.ongoing %}q_not_completed{% else %}q_completed{% endif %}" alt="{{ question.title }}">
-        {{ question.title }} <br/>Status: {% if question.ongoing %}Not completed{% else %}Completed{% endif %}, Finish: {{ question.finishes }}</a>
-        <div style="clear: both;"></div>
-    </div>
+    <div class="table-responsive">
+    <table class="table table-hover">
+    <thead>
+    <tr>
+    {% if logged_in %}
+        <th class="col-md-6">Question title</th>
+        <th class="col-md-1">Total votes</th>
+        <th class="col-md-3">Finished</th>
+        <th class="col-md-1">Duration</th>
+        <th class="col-md-1">Edit</th>
+        {% else %}
+        <th class="col-md-7">Question title</th>
+        <th class="col-md-1">Total votes</th>
+        <th class="col-md-3">Finished</th>
+        <th class="col-md-1">Duration</th>
+        {% endif %}
+
+    </tr>
+    </thead>
+    <tbody>
+    {% for question in questions %}
+    <tr onclick="document.location = '{{ url_for('questions.show', question_id=question.id) }}';" {% if question.ongoing %} class="success" {% elif not question.completed %} class="warning"{% endif %}>
+        <td>{{ question.title }}</td>
+        <td>{{ question.vote_distr.total }}</td>
+        <td>{% if question.completed or question.ongoing %} {{  question.finishes.strftime("%Y-%m-%d %H:%M") }} {% else %} N/A {% endif %}</td>
+        <td>{{ question.duration }}</td>
+        {% if logged_in %}
+        <td><a href="{{ url_for('admin.edit', qid=question.id) }}">edit</a></td>
+        {% endif %}
+    </tr>
     {% endfor %}
+    </tbody>
+    </table></div>
 {% endblock %}

@@ -56,7 +56,7 @@ def show_all():
 
 @mod.route("/admin/edit/<qid>/", methods=['GET'])
 @login_required
-def show_edit(qid):
+def edit(qid):
     data = Question.query.get(qid)
     if data is None:
         flash('Error: question not found')

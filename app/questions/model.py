@@ -76,7 +76,14 @@ class Question(db.Model):
             'vote_distr': self.get_vote_distribution(),
             'completed': self.completed(),
             'ongoing': self.ongoing(),
+            'duration': self.duration(),
         }
+
+    def duration(self):
+        if self.started is None:
+            return int((self.finishes - datetime.min).total_seconds())
+        else:
+            return int((self.finishes - self.started).total_seconds())
 
     def completed(self):
         now = datetime.now()
