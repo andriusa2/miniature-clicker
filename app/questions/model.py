@@ -25,9 +25,21 @@ class Question(db.Model):
     finishes = db.Column(db.DateTime)
 
     data = None
+    _data = None
     # relations
     # all votes cast to this one - 1 -> many
     votes = db.relationship('Vote', backref='question', lazy='dynamic')
+
+    def __init__(self, title, options, correct, owner, started, finishes):
+        self.question_data = pickle.dumps({
+            'title': title,
+            'options': options,
+            'correct': correct
+        })
+        self.owner = owner
+        self.started = started
+        self.finishes = finishes
+
 
     @staticmethod
     def get_ongoing():
@@ -40,6 +52,10 @@ class Question(db.Model):
             now = datetime.now()
             return Question.query.filter(Question.started <= now).all()
         return Question.query.all()
+
+    def _load_data(self):
+        if not self._data:
+            self._data = pickle.loads(self.question_data)
 
     def _prep_data(self):
         self._data = pickle.loads(self.question_data)
@@ -58,8 +74,8 @@ class Question(db.Model):
 
     def ongoing(self):
         now = datetime.now()
-        return self.started >= now > self.finishes
-    
+        return self.started <= now < self.finishes
+
     def get_data(self):
         if not self.data:
             self._prep_data()
@@ -71,7 +87,7 @@ class Question(db.Model):
     def valid_value(self, val):
         if not self.data:
             self._prep_data()
-        return 0 <= val < len(self.data['options'])
+        return 0 <= val < len(self._data['options'])
 
     def alter_finish(self, td):
         self.finishes += td
@@ -119,6 +135,21 @@ class Question(db.Model):
         self.question_data = pickle.dumps(self.data)
         if not delayed_commit:
             db.session.commit()
+
+    def add_option(self, value=None):
+        if not value:
+            value = "Option"
+        self._load_data()
+        self._data['options'].append(value)
+        self._update_data()
+
+    @staticmethod
+    def get_empty_data():
+        return {
+            'title': 'Dummy name',
+            'options': [],
+            'correct': None
+        }
 
 
 class Vote(db.Model):
