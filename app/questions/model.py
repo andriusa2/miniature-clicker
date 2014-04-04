@@ -59,8 +59,14 @@ class Question(db.Model):
     def get_all(not_started_only=False):
         if not_started_only:
             now = datetime.now()
-            return Question.query.filter(Question.started <= now).all()
-        return Question.query.all()
+            return Question.query.filter(Question.started <= now).order_by(Question.finishes.desc()).all()
+        questions = list(Question.query.order_by(Question.finished.desc()).all())
+        # now take all those which aren't started and put them to the start of the list
+        live, waiting = [], []
+
+        for item in questions:
+            (live if item.started is not None else waiting).append(item)
+        return waiting + live
 
     def _load_data(self):
         if not self._data:

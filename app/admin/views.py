@@ -52,7 +52,7 @@ def show_all():
     if questions is None:
         return 'No questions found'
     data = list(map(lambda a: a.get_data(), questions))
-    return render_template("admin/all_q.html",questions=data, logged_in=current_user.is_authenticated())
+    return render_template("questions/all_q.html",questions=data, logged_in=current_user.is_authenticated())
 
 @mod.route("/admin/edit/<qid>/", methods=['GET'])
 @login_required
