@@ -35,6 +35,7 @@ def create_users(n=5):
 def create_questions(us, n=5, l=2):
     qs = []
     minute = datetime.timedelta(minutes=1)
+    day = datetime.timedelta(days=1)
     u = us[0]
     now = datetime.datetime.now()
     for i in range(l):
@@ -45,7 +46,7 @@ def create_questions(us, n=5, l=2):
         st = get_random_date(now)
         qs.append(Q(owner=us[(i+1)%len(us)], question_data=pickle.dumps(get_dummy_question(i)), started=st, finishes=st+minute))
         db.session.add(qs[-1])
-    qs.append(Q(owner=u, question_data=pickle.dumps(get_dummy_question(1)), started=now, finishes=now+minute*7))
+    qs.append(Q(owner=u, question_data=pickle.dumps(get_dummy_question(1)), started=now, finishes=now+day))
     db.session.add(qs[-1])
     db.session.commit()
     return qs
