@@ -67,6 +67,9 @@ def show_edit(qid):
 
 @mod.route("/admin/test_edit/<qid>/<field>/<val>", methods=['GET'])
 def test_submit_edit(qid, field, val):
+    """
+    Field should be in . notation, e.g. data[a][b] => a.b
+    """
     data = Question.query.get(qid)
 
     if data is None:
