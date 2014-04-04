@@ -16,7 +16,7 @@ db.create_all()
 def get_random_date(date):
     return date + datetime.timedelta(days=-randint(1,10))
 
-def get_dummy_question(i):
+def get_dummy_question_options(i):
     return {
         'title': 'Question %d' % i,
         'options': ['Option %d' % j for j in range(4)],
@@ -40,13 +40,13 @@ def create_questions(us, n=5, l=2):
     now = datetime.datetime.now()
     for i in range(l):
         st = get_random_date(now)
-        qs.append(Q(owner=u, question_data=pickle.dumps(get_dummy_question(i)), started=st, finishes=st+minute))
+        qs.append(Q(owner=u, started=st, finishes=st+minute, **get_dummy_question_options(i)))
         db.session.add(qs[-1])
     for i in range(n-1):
         st = get_random_date(now)
-        qs.append(Q(owner=us[(i+1)%len(us)], question_data=pickle.dumps(get_dummy_question(i)), started=st, finishes=st+minute))
+        qs.append(Q(owner=us[(i+1)%len(us)], started=st, finishes=st+minute, **get_dummy_question_options(i)))
         db.session.add(qs[-1])
-    qs.append(Q(owner=u, question_data=pickle.dumps(get_dummy_question(1)), started=now, finishes=now+day))
+    qs.append(Q(owner=u, started=now, finishes=now+day, **get_dummy_question_options(1)))
     db.session.add(qs[-1])
     db.session.commit()
     return qs
