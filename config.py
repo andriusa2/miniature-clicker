@@ -7,7 +7,7 @@ DEBUG = False
 ADMINS = frozenset(['youremail@yourdomain.com'])
 SECRET_KEY = 'This string will be replaced with a proper key in production.'
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'app.db')
+SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///' + os.path.join(_basedir, 'app.db'))
 # SQLALCHEMY_DATABASE_URL = 'sqlite://'  # in memory
 DATABASE_CONNECT_OPTIONS = {}
 SQLALCHEMY_ECHO = True
