@@ -63,15 +63,15 @@ def create_votes(qs, n=2, l=5):
     db.session.commit()
     second = datetime.timedelta(seconds=1)
     for i in range(l):
-        vs.append(V(voter=voters[i], question=qs[0], vote_val=randint(0,4), time=qs[0].started+(i+1)*second))
+        vs.append(V(voter=voters[i], question=qs[0], vote_val=randint(0,3), time=qs[0].started+(i+1)*second))
         db.session.add(vs[-1])
-    n = 0
-    for q in qs:
+    v = 0
+    for q in qs[1:]:
         for i in range(n):
-            vs.append(V(voter=voters[n], question=q, vote_val=randint(0,4), time=qs[0].started+(i+1)*second))
+            vs.append(V(voter=voters[v], question=q, vote_val=randint(0,3), time=q.started+(i+1)*second))
             db.session.add(vs[-1])
-            n+=1
-            n%=len(voters)
+            v+=1
+            v%=len(voters)
     db.session.commit()
     return voters, vs
 

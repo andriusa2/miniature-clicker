@@ -108,7 +108,8 @@ class Question(db.Model):
         retval = {
             'total': sum_votes,
             'distr': list(votes),
-            'vote_split': [{
+            'vote_split':
+            [{
                 'percentage': float(v)/float(sum_votes),
                 'votes': v,
                 'option': opt
