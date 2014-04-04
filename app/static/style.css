@@ -60,3 +60,24 @@ dt label {
     margin-right:auto;
     max-width:400px;
 }
+.results_header {
+    background-color:#dddddd;
+    padding:10px;
+    font-family:Georgia;
+    border:1px solid #000000;
+}
+.res_q_name, a.res_q_name:active, a.res_q_name:visited {
+    padding:7px;
+    display:block;
+    color:#000;
+}
+.res_q_name:hover {
+    text-decoration:underline;
+    color:#000;
+}
+.res_q_name:nth-child(2n-1){
+    background-color:#99FF99;
+}
+.res_q_name:nth-child(2n){
+    background-color:#BBFFBB;
+}
