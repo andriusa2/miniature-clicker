@@ -3,6 +3,9 @@ div {
     padding:0px;
     border-spacing:0px;
 }
+ul {
+    list-style-type: none;
+}
 
 .container {
     text-align:center;
@@ -15,27 +18,45 @@ div {
     padding:0px;
 }
 .question {
-    background-color:#cccccc;
+    background-color:#dddddd;
     padding:10px;
+    font-family:Georgia;
+    border:1px solid #000000;
 }
 .option{
     padding:8px;
-}
-.answer{
-    padding:8px;
-}
-.answer:nth-child(2n-1) {
-    background-color:#AAAAFF;
-}
-.answer:nth-child(2n) {
-    background-color:#CCCCFF;
-}
-.answer:hover, .answer:active{
-    background-color:#4444FF;
-    cursor:pointer;
 }
 .footer {
     clear:both;
     text-align:center;
     color:#333;
+}
+.flashes {
+    padding:8px;
+    border-radius:5px;
+    background-color:#BBBBEE;
+    border:1px solid #3333EE;
+}
+.errors {
+    padding:5px;
+    border-radius:3px;
+    background-color:#EEAAAA;
+    border:1px solid #EE3333;
+    margin-top:10px;
+    margin-bottom:6px;
+    margin-left:auto;
+    margin-right:auto;
+}
+dt label {
+    padding:3px;
+}
+.login_box{
+    padding:15px 30px;
+    border:1px solid #555;
+    border-radius:3px;
+    margin-top:2px;
+    margin-bottom:2px;
+    margin-left:auto;
+    margin-right:auto;
+    max-width:400px;
 }

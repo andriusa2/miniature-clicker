@@ -3,4 +3,7 @@ function submit(id) {
     $("#form").submit();
 }
 
-setTimeout('$(".flashes").hide()', 5000)
+$(document).ready(
+    function(){
+        $(".flashes").delay(5000).fadeOut(500);
+    });
