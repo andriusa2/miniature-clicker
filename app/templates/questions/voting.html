@@ -9,7 +9,7 @@
         <a href="#" class="btn btn-primary btn-large btn-block {% if loop.index0 == question.last_vote_val %} active {% endif %}" onclick="submit({{ loop.index0 }})">{{ option }}</a>
         </div>
     {% endfor %}
-    <div class="q_expiration">{{ question["finishes"] }}</div>
+    <div class="q_expiration">Question expires {{ question["finishes"] }}</div>
     <input id="voting" type="hidden" name="vote" value="-1" />
     <input type="hidden" name="question_id" value="{{ question["id"] }}" />
     </form>
