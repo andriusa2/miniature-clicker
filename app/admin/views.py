@@ -1,6 +1,6 @@
 from flask import Blueprint, request, url_for, make_response, render_template, flash, g, session, redirect
-from flask.ext.login import LoginManager, login_user, login_required, logout_user
-
+from flask.ext.login import login_user, login_required, logout_user, current_user
+import datetime
 from app.admin.forms import LoginForm, RegistrationForm
 
 
@@ -54,18 +54,18 @@ def show_all():
     data = list(map(lambda a: a.get_data(), questions))
     return str(data)
 
-@mod.route("/admin/edit/<qid>", methods=['GET'])
+@mod.route("/admin/edit/<qid>/", methods=['GET'])
 @login_required
 def show_edit(qid):
     data = Question.query.get(qid)
     if data is None:
-        flash('No such question exists')
+        flash('Error: question not found')
         return redirect(url_for('.show_all'))
     data = data.get_data()
     return str(data)
 
 
-@mod.route("/admin/test_edit/<qid>/<field>/<val>", methods=['GET'])
+@mod.route("/admin/test_edit/<qid>/<field>/<val>/", methods=['GET'])
 def test_submit_edit(qid, field, val):
     """
     Field should be in . notation, e.g. data[a][b] => a.b
@@ -73,23 +73,45 @@ def test_submit_edit(qid, field, val):
     data = Question.query.get(qid)
 
     if data is None:
-        flash('No such question exists')
+        flash('Error: question not found')
         return redirect(url_for('.show_all'))
     data.update_field(field, val)
     return str(data.get_data())
 
-@mod.route("/admin/edit/<qid>", methods=['POST'])
+@mod.route("/admin/edit/<qid>/", methods=['POST'])
 @login_required
 def submit_edit(qid):
     data = Question.query.get(qid)
     if data is None:
-        flash('No such question exists')
+        flash('Error: question not found')
         return "No question found", 500
     for field, val in request.form.iteritems():
         data.update_field(field, val, delayed_commit=True)
     db.session.commit()
     return "Set successfully"
-    # TODO: copy over data, commit db
+
+
+@mod.route("/admin/add_question/", methods=['GET', 'POST'])
+@login_required
+def add_question():
+    if request.method == 'POST':
+        print(request.form)
+        req_fields = Question.get_fields()
+        if req_fields - set(request.form.keys()) == set([]):
+            finishes = datetime.datetime.min + datetime.timedelta(seconds=int(request.form['duration']))
+            started = None
+            options = request.form.getlist('options') # [val for q, val in request.form.items() if q == 'options']
+            question = Question(owner=current_user, finishes=finishes, options=options,
+                                started=started, title=request.form['title'], description=request.form['description'], correct=request.form['correct'])
+
+            db.session.add(question)
+            db.session.commit()
+            flash('Question added successfully')
+            return redirect(url_for('.show_all'))
+        flash('Not enough data provided')
+    return render_template('admin/add_question.html')
+
+
 
 @mod.route("/admin/show/<qid>", methods=['POST'])
 def show_question(qid):

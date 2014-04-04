@@ -1,0 +1,40 @@
+{% extends "questions/main.html" %}
+
+{% block content %}
+<div class="add_question_box">
+    <form method="post" action="/admin/add_question/">
+        <label for="title">Question summary:</label>
+        <input id="title" type="text" name="title" class="form-control" />
+        <label for="description">Full text:</label>
+        <textarea id="description" name="description" class="form-control" rows="20"></textarea>
+        <fieldset>
+            <legend>Options:</legend>
+            <div class="row">
+                <div class="col-xs-3">
+                    <input name="options" type="text" value="Option1" class="form-control" />
+                </div>
+                <div class="col-xs-3">
+                    <input name="options" type="text" value="Option2" class="form-control" />
+                </div>
+                <div class="col-xs-3">
+                    <input name="options" type="text" value="Option3" class="form-control" />
+                </div>
+                <div class="col-xs-3">
+                    <input name="options" type="text" value="Option4" class="form-control" />
+                </div>
+            </div>
+        </fieldset>
+        <label for="correct">Correct option</label>
+        <select name="correct" id="correct" class="form-control">
+            <option value="-1" selected>None</option>
+            <option value="0">1</option>
+            <option value="1">2</option>
+            <option value="2">3</option>
+            <option value="3">4</option>
+        </select>
+        <label for="duration">Question duration(seconds)</label>
+        <input id="duration" name="duration" value="60" class="form-control"/>
+        <input type="submit" value="Add question" class="btn btn-primary">
+    </form>
+</div>
+{% endblock %}
