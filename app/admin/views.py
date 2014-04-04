@@ -55,6 +55,7 @@ def show_all():
     return str(data)
 
 @mod.route("/admin/edit/<qid>", methods=['GET'])
+@login_required
 def show_edit(qid):
     data = Question.query.get(qid)
     if data is None:
@@ -63,13 +64,27 @@ def show_edit(qid):
     data = data.get_data()
     return str(data)
 
+
+@mod.route("/admin/test_edit/<qid>/<field>/<val>", methods=['GET'])
+def test_submit_edit(qid, field, val):
+    data = Question.query.get(qid)
+
+    if data is None:
+        flash('No such question exists')
+        return redirect(url_for('.show_all'))
+    data.update_field(field, val)
+    return str(data.get_data())
+
 @mod.route("/admin/edit/<qid>", methods=['POST'])
+@login_required
 def submit_edit(qid):
     data = Question.query.get(qid)
     if data is None:
         flash('No such question exists')
-        return redirect(url_for('.show_all'))
-    raise NotImplementedError
+        return "No question found", 500
+    field, val = request.form['field'], request.form['val']
+    data.update_field(field, val)
+    return "Set successfully"
     # TODO: copy over data, commit db
 
 @mod.route("/admin/show/<qid>", methods=['POST'])

@@ -87,6 +87,14 @@ class Question(db.Model):
         })
         return retval
 
+    def update_field(self, field, val):
+        self.get_data()
+        if field in self.data:
+            self.data[field] = val
+            self.question_data = pickle.dumps(self.data)
+            db.session.commit()
+        else:
+            print("Field %s not found" % field)
 
 
 class Vote(db.Model):
@@ -133,6 +141,7 @@ class Voter(db.Model):
             if self.has_voted(question):
                 v = self.last_vote(question)
                 v.vote_val = value
+                v.time = datetime.now()
             else:
                 vote = Vote(question=question, vote_val=value, time=datetime.now(), voter=self)
                 db.session.add(vote)

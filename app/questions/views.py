@@ -11,7 +11,7 @@ def vote():
     # get the current ongoing quiz
     q = Question.get_ongoing()
     if q is None:
-        return 'Nothing, lol' # render_template('questions/nothing.html')
+        return 'Nothing, lol'  # render_template('questions/nothing.html')
 
     # unpickle the data structure then
     question = q.get_data()
