@@ -60,7 +60,7 @@ class Question(db.Model):
         if not_started_only:
             now = datetime.now()
             return Question.query.filter(Question.started <= now).order_by(Question.finishes.desc()).all()
-        questions = list(Question.query.order_by(Question.finished.desc()).all())
+        questions = list(Question.query.order_by(Question.finishes.desc()).all())
         # now take all those which aren't started and put them to the start of the list
         live, waiting = [], []
 

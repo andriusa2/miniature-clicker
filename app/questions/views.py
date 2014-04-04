@@ -67,7 +67,7 @@ def show(question_id):
 
 @mod.route('/show/all/', methods=['GET'])
 def show_all():
-    questions = Question.get_all(not_started_only=True)
+    questions = Question.get_all(not_started_only=not(current_user.is_authenticated()))
     if questions is None:
         return 'No questions found'
     data = list(map(lambda a: a.get_data(), questions))
