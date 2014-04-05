@@ -13,10 +13,9 @@ mod = Blueprint('admin', __name__)
 
 @login_manager.user_loader
 def load_user(userid):
-    print(userid)
     return User.query.get(int(userid))
 
-@mod.route("/add_user/", methods=["GET", "POST"])
+@mod.route("/admin/add_user/", methods=["GET", "POST"])
 @login_required
 def add_user():
     form = RegistrationForm(request.form)
@@ -54,70 +53,67 @@ def show_all():
     data = list(map(lambda a: a.get_data(), questions))
     return render_template("questions/all_q.html",questions=data, logged_in=current_user.is_authenticated())
 
-@mod.route("/admin/edit/<qid>/", methods=['GET'])
-@login_required
-def edit(qid):
-    data = Question.query.get(qid)
-    if data is None:
-        flash('Error: question not found')
-        return redirect(url_for('.show_all'))
-    data = data.get_data()
-    return render_template("admin/edit.html", question=data, logged_in=current_user.is_authenticated())
-
-
-@mod.route("/admin/test_edit/<qid>/<field>/<val>/", methods=['GET'])
-def test_submit_edit(qid, field, val):
-    """
-    Field should be in . notation, e.g. data[a][b] => a.b
-    """
-    data = Question.query.get(qid)
-
-    if data is None:
-        flash('Error: question not found')
-        return redirect(url_for('.show_all'))
-    data.update_field(field, val)
-    return str(data.get_data())
-
-@mod.route("/admin/edit/<qid>/", methods=['POST'])
-@login_required
-def submit_edit(qid):
-    data = Question.query.get(qid)
-    if data is None:
-        flash('Error: question not found')
-        return "No question found", 500
-    # full update
-    finishes = datetime.datetime.min + datetime.timedelta(seconds=int(request.form['duration']))
-    started = None
-    options = request.form.getlist('options')
-    data.finishes = finishes
-    data.started = started
-    data.update_field('options', options, delayed_commit=True)
-    data.update_field('correct', request.form['correct'], delayed_commit=True)
-    data.update_field('title', request.form['title'], delayed_commit=True)
-    data.update_field('description', request.form['description'], delayed_commit=True)
-    db.session.commit()
-    return "Set successfully"
-
-
 @mod.route("/admin/add_question/", methods=['GET', 'POST'])
+@mod.route("/admin/edit/", methods=['GET', 'POST'])
+@mod.route("/admin/edit/<qid>/", methods=['GET', 'POST'])
 @login_required
-def add_question():
+def edit(qid=None):
     if request.method == 'POST':
-        print(request.form)
         req_fields = Question.get_fields()
-        if req_fields - set(request.form.keys()) == set([]):
-            finishes = datetime.datetime.min + datetime.timedelta(seconds=int(request.form['duration']))
-            started = None
-            options = request.form.getlist('options') # [val for q, val in request.form.items() if q == 'options']
-            question = Question(owner=current_user, finishes=finishes, options=options,
-                                started=started, title=request.form['title'], description=request.form['description'], correct=request.form['correct'])
+        if req_fields - set(request.form.keys()) != set([]):
+            flash('Not enough data')
+            return redirect(url_for('.edit', qid=None))
 
-            db.session.add(question)
-            db.session.commit()
-            flash('Question added successfully')
-            return redirect(url_for('.show_all'))
-        flash('Not enough data provided')
-    return render_template('admin/add_question.html', logged_in=current_user.is_authenticated())
+        data = None
+        if qid is not None:
+            data = Question.query.get(int(qid))
+            if data is not None:
+                # update question
+                if data.started:
+                    started = data.started
+                    finishes = started + datetime.timedelta(seconds=int(request.form['duration']))
+                else:
+                    finishes = datetime.datetime.min + datetime.timedelta(seconds=int(request.form['duration']))
+                    started = None
+                options = request.form.getlist('options')
+                while options and not options[-1]:
+                    options.pop()
+                if not options or '' in options:
+                    flash('Inconsistent option edit')
+                    return redirect(url_for('.edit', qid=qid))
+                data.finishes = finishes
+                data.started = started
+                data.update_field('options', options, delayed_commit=True)
+                data.update_field('correct', int(request.form['correct']), delayed_commit=True)
+                data.update_field('title', request.form['title'], delayed_commit=True)
+                data.update_field('description', request.form['description'], delayed_commit=True)
+                db.session.commit()
+                return redirect(url_for('.edit', qid=qid))
+    # add new question
+
+    # full update
+        finishes = datetime.datetime.min + datetime.timedelta(seconds=int(request.form['duration']))
+        started = None
+        options = request.form.getlist('options')
+
+        while options and not options[-1]:
+            options.pop()
+        if not options or '' in options:
+            flash('Inconsistent option edit')
+            return redirect(url_for('.edit', qid=qid))
+        question = Question(owner=current_user, finishes=finishes, options=options,
+                            started=started, title=request.form['title'], description=request.form['description'], correct=int(request.form['correct']))
+
+        db.session.add(question)
+        db.session.commit()
+        flash('Question added successfully')
+        return redirect(url_for('.show_all'))
+    data = None
+    if qid is not None:
+        data = Question.query.get(int(qid))
+        if data:
+            data = data.get_data()
+    return render_template('admin/edit.html', question=data)
 
 
 

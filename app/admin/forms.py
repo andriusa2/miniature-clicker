@@ -1,6 +1,6 @@
 
 from flask_wtf import Form
-from wtforms import TextField, PasswordField, validators
+from wtforms import TextField, PasswordField, validators, IntegerField, TextAreaField
 
 from app.admin.model import User
 

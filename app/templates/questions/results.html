@@ -11,8 +11,13 @@
     <div class="q_info">
         <ul>
             <li>People voted: {{ question.vote_distr.total }}</li>
+            {% if question.started %}
             <li>Start: {{ question.started.strftime("%Y-%m-%d %H:%M") }}</li>
             <li>Finish: {{ question.finishes.strftime("%Y-%m-%d %H:%M") }}</li>
+            {% else %}
+            <li>Question not started</li>
+            <li>Duration: {{ question.duration }}</li>
+            {% endif %}
         </ul>
     </div>
     </div>

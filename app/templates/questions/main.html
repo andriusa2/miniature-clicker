@@ -28,7 +28,7 @@
             <li><a href="{{ url_for('questions.vote') }}">Current vote</a></li>
           {% if logged_in %}
             <li><a href="{{ url_for('questions.show_all') }}">All questions</a></li>
-            <li><a href="{{ url_for('admin.add_question') }}">New question</a></li>
+            <li><a href="{{ url_for('admin.edit', qid=None) }}">New question</a></li>
             <li><a href="{{ url_for('admin.add_user') }}">New user</a></li>
           {% else %}
             <li><a href="{{ url_for('questions.show_all') }}">Past questions</a></li>

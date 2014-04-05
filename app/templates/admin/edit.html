@@ -2,38 +2,39 @@
 
 {% block content %}
 <div class="add_question_box">
-    <form method="post" action="/admin/edit/{{ question.id }}/">
-        <label for="title">Question summary:</label>
-        <input id="title" type="text" name="title" class="form-control" value="{{ question.title }}"/>
-        <label for="description">Full text:</label>
-        <textarea id="description" name="description" class="form-control" rows="10">{{ question.desc }}</textarea>
-        <fieldset>
-            <legend>Options:</legend>
-            <div class="row">
-                <div class="col-xs-3">
-                    <input name="options" type="text" value="{{ question.options[0] }} " class="form-control" />
-                </div>
-                <div class="col-xs-3">
-                    <input name="options" type="text" value="{{ question.options[1] }}" class="form-control" />
-                </div>
-                <div class="col-xs-3">
-                    <input name="options" type="text" value="{{ question.options[2] }}" class="form-control" />
-                </div>
-                <div class="col-xs-3">
-                    <input name="options" type="text" value="{{ question.options[3] }}" class="form-control" />
-                </div>
+    <form method="post" action="/admin/edit/{% if question %}{{ question.id }}/ {% endif %}" class="form-horizontal">
+        <div class="form-group">
+            <label for="title" class="col-xs-3">Question summary:</label>
+            <div class="col-xs-8">
+              <input id="title" type="text" name="title" class="form-control" {% if question %} value="{{ question.title }}" {% endif %}/>
             </div>
+        </div>
+        <div class="form-group">
+        <label for="description">Full text:</label>
+        <textarea id="description" name="description" class="form-control" rows="10">{% if question %}{{ question.desc }}{% endif %}</textarea>
+        </div>
+        <fieldset class="form-group">
+            <legend>Options (select correct option):</legend>
+                {% for i in range(6) %}
+                <div class="col-lg-4 col-md-6" {% if i > 3 %} style="display:none" {% endif %}>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <input type="radio" name="correct" value="{{ i }}" {% if question and question.correct == i %} checked {% endif %}/>
+                        </span>
+                        <input type="text" name="options" class="form-control" value="{% if question and question.options[i] %}{{ question.options[i] }}{% endif %}" placeholder="Option {{ i + 1 }}"/>
+                    </div>
+                </div>
+            {% endfor %}
+
+                <input id="no_answer" type="radio" name="correct" value="-1" {% if not question or question.correct < 0 %} checked {% endif %} />
+                <label for="no_answer">No correct answer</label>
         </fieldset>
-        <label for="correct">Correct option</label>
-        <select name="correct" id="correct" class="form-control">
-            <option value="-1" selected>None</option>
-            <option value="0">{{ question.options[0] }}</option>
-            <option value="1">{{ question.options[1] }}</option>
-            <option value="2">{{ question.options[2] }}</option>
-            <option value="3">{{ question.options[3] }}</option>
-        </select>
-        <label for="duration">Question duration from now (seconds)</label>
-        <input id="duration" name="duration" value="60" class="form-control"/>
+        <div class="form-group">
+        <label for="duration" class="col-xs-3">Question duration (seconds)</label>
+        <div class="col-xs-2">
+        <input id="duration" name="duration" value="{% if question %}{{ question.duration }}{% else %}60{% endif %}" class="form-control"/>
+        </div>
+        </div>
         <input type="submit" value="Save question" class="btn btn-primary">
     </form>
 </div>

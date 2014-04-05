@@ -39,7 +39,7 @@ class Question(db.Model):
         self.question_data = pickle.dumps({
             'title': title,
             'options': options,
-            'correct': correct
+            'correct': int(correct)
         })
         self.owner = owner
         self.started = started
@@ -73,7 +73,7 @@ class Question(db.Model):
             self._data = pickle.loads(self.question_data)
 
     def _prep_data(self):
-        self._data = pickle.loads(self.question_data)
+        self._load_data()
         self.data = {
             'id': self.id,
             'started': self.started,
@@ -156,7 +156,7 @@ class Question(db.Model):
                 print("Field %s not found[%s]" % (field, f))
                 return
         root[fs[-1]] = val
-        self.question_data = pickle.dumps(self.data)
+        self.question_data = pickle.dumps(self._data)
         if not delayed_commit:
             db.session.commit()
 
