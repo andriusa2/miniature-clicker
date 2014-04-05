@@ -4,11 +4,11 @@
 
 {% block content %}
 <div class="login_box">
-    <form method="post" action="/login">
-      <dl>
-        {{ render_field(form.username) }}
-        {{ render_field(form.password) }}
-      </dl>
+    <form method="post" action="/login" class="form-horizontal">
+    {% set left='class="col-xs-3 control-label"' %}
+    {% set right='class="col-xs-9"' %}
+        {{ render_field(form.username, left, right) }}
+        {{ render_field(form.password, left, right) }}
       <input type="submit" value="Login" class="btn btn-primary">
     </form>
 </div>

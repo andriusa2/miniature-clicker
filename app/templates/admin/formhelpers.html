@@ -1,12 +1,12 @@
-{% macro render_field(field) %}
-    <dt>{{ field.label }}</dt>
-    <dd>{{ field(class_="form-control") | safe }}
+{% macro render_field(field, left, right) %}
     {% if field.errors %}
-        <ul class=errors>
-            {% for error in field.errors %}
-              <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
+    <div class="form-group has-error">
+    {% else %}
+    <div class="form-group">
     {% endif %}
-    </dd>
+        <label {{ left | safe }} for="{{ field.id }}">{{ field.label }}</label>
+        <div {{ right | safe }}>
+            {{ field(class_="form-control") | safe }}
+        </div>
+    </div>
 {% endmacro %}

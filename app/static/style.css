@@ -36,14 +36,10 @@ ul {
     border:1px solid #3333EE;
 }
 .errors {
-    padding:5px;
-    border-radius:3px;
+    padding:8px;
+    border-radius:5px;
     background-color:#EEAAAA;
     border:1px solid #EE3333;
-    margin-top:10px;
-    margin-bottom:6px;
-    margin-left:auto;
-    margin-right:auto;
 }
 dt label {
     padding:3px;
