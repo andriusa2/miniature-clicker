@@ -11,7 +11,8 @@ def vote():
     # get the current ongoing quiz
     q = Question.get_ongoing()
     if q is None:
-        return 'Nothing, lol'  # render_template('questions/nothing.html')
+        flash("No ongoing question")
+        return redirect(url_for('.show_all'))  # 'Nothing, lol'  # render_template('questions/nothing.html')
 
     # unpickle the data structure then
     question = q.get_data()
@@ -59,7 +60,8 @@ def submit():
 def show(question_id):
     question = Question.query.get(int(question_id))
     if question is None:
-        return 'Not found'
+        flash('Question not found')
+        return redirect(url_for('.show_all'))
     # gather votes
     data = question.get_data()
     return render_template('questions/results.html', question=data, logged_in=current_user.is_authenticated())

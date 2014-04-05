@@ -1,4 +1,4 @@
-from flask import Blueprint, request, url_for, make_response, render_template, flash, g, session, redirect
+from flask import Blueprint, request, url_for, make_response, render_template, flash, g, session, redirect, json
 from flask.ext.login import login_user, login_required, logout_user, current_user
 import datetime
 from app.admin.forms import LoginForm, RegistrationForm
@@ -123,6 +123,7 @@ def show_question(qid):
     # TODO: show time controls, etc
 
 @mod.route("/admin/start/<qid>/", methods=['GET', 'POST'])
+@login_required
 def start_question(qid):
     if Question.get_ongoing():
         flash("There is ongoing vote, you can't start another one now")
@@ -133,3 +134,32 @@ def start_question(qid):
         return redirect(url_for('.show_all'))
     q.start()
     return redirect(url_for('questions.vote'))
+
+@mod.route("/admin/pause/<qid>/", methods=['GET', 'POST'])
+@login_required
+def pause_question(qid):
+    q = Question.query.get(qid)
+    if not q:
+        flash("No such id")
+        return redirect(url_for('.show_all'))
+    q.pause()
+    return redirect(url_for('questions.show',question_id=qid))
+
+@mod.route("/admin/stop/<qid>/", methods=['GET', 'POST'])
+@login_required
+def stop_question(qid):
+    q = Question.query.get(qid)
+    if not q:
+        flash("No such id")
+        return redirect(url_for('.show_all'))
+    q.stop()
+    return redirect(url_for('questions.show', question_id=qid))
+
+@mod.route("/admin/votes/<qid>/count/", methods=['GET', 'POST'])
+@login_required
+def get_vote_count(qid):
+    q = Question.query.get(qid)
+    if not q:
+        flash("No such id")
+        return redirect(url_for('.show_all'))
+    return json.dumps({'d': q.get_vote_count(), 'completed': q.completed()})

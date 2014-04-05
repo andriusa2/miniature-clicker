@@ -1,10 +1,25 @@
 {% extends "questions/main.html" %}
 {% block content %}
+    {% if question.completed %}
     <div id="chart_div" style="max-width: 800px; height: 300px;"></div>
+    {% elif logged_in %}
+    <div class="row">
+        <div class="col-xs-1">
+        <a href="{{ url_for('admin.start_question', qid=question.id) }}" class="btn btn-default btn-success btn-lg {% if question.ongoing %}disabled{% endif %}"><span class="glyphicon glyphicon-play"></span></a>
+        </div>
+        <div class="col-xs-1">
+        <a href="{{ url_for('admin.pause_question', qid=question.id) }}" class="btn btn-default btn-success btn-lg {% if not question.ongoing %}disabled{% endif %}"><span class="glyphicon glyphicon-pause"></span></a>
+        </div>
+        <div class="col-xs-1">
+        <a href="{{ url_for('admin.stop_question', qid=question.id) }}" class="btn btn-default btn-success btn-lg {% if not question.ongoing %}disabled{% endif %}"><span class="glyphicon glyphicon-stop"></span></a>
+        </div>
+        <div class="col-xs-offset-8 col-xs-1" id="vote_count">{{ question.vote_distr.total }}</div>
+    </div>
+    {% endif %}
     <div class="question">{{ question.title }}</div>
     <div class="question_res">
     {% for option in question.options %}
-        <div class="btn btn-primary btn-large btn-block disabled {% if loop.index0 == question.correct %} btn-success {% else %} btn-warning {% endif %}">
+        <div class="btn btn-primary btn-large btn-block disabled {% if question.completed %}{% if loop.index0 == question.correct %} btn-success {% else %} btn-warning {% endif %}{% else %} btn-primary{% endif %}">
             {{ option }}
         </div>
     {% endfor %}
@@ -24,6 +39,7 @@
 {% endblock %}
 
 {% block additional_scripts %}
+    {% if question.completed %}
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
       google.load('visualization', '1', {packages: ['corechart']});
@@ -60,4 +76,5 @@
       }
       google.setOnLoadCallback(drawVisualization);
     </script>
+    {% endif %}
 {% endblock %}

@@ -13,7 +13,7 @@ from sqlalchemy import func
 
 
 def to_js_timestamp(time):
-    epoch = datetime.utcfromtimestamp(0)
+    epoch = datetime.utcfromtimestamp(3*60*60)  # TODO - fix for timezones
     delta = time - epoch
     return delta.total_seconds() * 1000.0
 
@@ -107,6 +107,9 @@ class Question(db.Model):
     def get_all_votes(self):
         return self.votes.all()
 
+    def get_vote_count(self):
+        return self.votes.count()
+
     def valid_value(self, val):
         if not self.data:
             self._prep_data()
@@ -181,6 +184,18 @@ class Question(db.Model):
                 self.started = datetime.now()
                 self.finishes += self.started - datetime.min
                 db.session.commit()
+
+    def stop(self):
+        if self.ongoing():
+            self.finishes = datetime.now()
+            db.session.commit()
+
+    def pause(self):
+        if self.ongoing():
+            self.finishes = self.finishes - datetime.now() + datetime.min
+            self.started = None
+            db.session.commit()
+
 
 class Vote(db.Model):
 
