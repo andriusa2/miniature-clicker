@@ -13,7 +13,7 @@ from sqlalchemy import func
 
 
 def to_js_timestamp(time):
-    epoch = datetime.utcfromtimestamp(3*60*60)  # TODO - fix for timezones
+    epoch = datetime.utcfromtimestamp(0)  # TODO - fix for timezones
     delta = time - epoch
     return delta.total_seconds() * 1000.0
 
