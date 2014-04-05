@@ -117,7 +117,19 @@ def edit(qid=None):
 
 
 
-@mod.route("/admin/show/<qid>", methods=['POST'])
+@mod.route("/admin/show/<qid>/", methods=['POST'])
 def show_question(qid):
     raise NotImplementedError
     # TODO: show time controls, etc
+
+@mod.route("/admin/start/<qid>/", methods=['GET', 'POST'])
+def start_question(qid):
+    if Question.get_ongoing():
+        flash("There is ongoing vote, you can't start another one now")
+        return redirect(url_for('.show_all'))
+    q = Question.query.get(qid)
+    if not q:
+        flash("No such id")
+        return redirect(url_for('.show_all'))
+    q.start()
+    return redirect(url_for('questions.vote'))
