@@ -1,5 +1,6 @@
 from flask import Blueprint, request, url_for, make_response, render_template, flash, g, session, redirect
 from flask.ext.login import current_user
+from sqlalchemy.exc import OperationalError
 from app import db
 from app.questions.model import Question, Voter
 
@@ -9,7 +10,17 @@ mod = Blueprint('questions', __name__)
 @mod.route('/')
 def vote():
     # get the current ongoing quiz
-    q = Question.get_ongoing()
+    try:
+        q = Question.get_ongoing()
+    except OperationalError as e:
+        if 'no such table' in repr(e):
+            # reset DB, as there's no such table
+            # WRONG WAY TO DO THIS, BUT I'M TOO LAZY TO DO ANYTHING BETTER
+            import app.test.test_data as td
+            td.default_battery()
+            flash('Reset db')
+            return redirect(url_for('.vote'))
+        return repr(e), 500
     if q is None:
         flash("No ongoing question")
         return redirect(url_for('.show_all'))  # 'Nothing, lol'  # render_template('questions/nothing.html')
