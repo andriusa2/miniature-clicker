@@ -35,7 +35,7 @@ def login():
         flash("Successfully logged in as %s" % form.user.username)
         login_user(form.user)
         return redirect(request.args.get("next") or url_for(".show_all"))
-    return render_template('admin/login.html', form=form, logged_in=current_user.is_authenticated()) # render_template("admin/login.html", form=form)
+    return render_template('admin/login.html', form=form, logged_in=current_user.is_authenticated())
 
 
 @mod.route("/logout")

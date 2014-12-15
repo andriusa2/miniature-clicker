@@ -1,7 +1,5 @@
 
-from app import db
-import bcrypt
-# from flaskext.bcrypt import generate_password_hash, check_password_hash
+from app import db, bcrypt
 
 class User(db.Model):
 
@@ -29,19 +27,13 @@ class User(db.Model):
 
     def get_all_votes(self):
         return self.votes.all()
-    # fix this
+
     def check_password(self, pwd):
-        print(self.password)
-        cand = bcrypt.hashpw(pwd, self.password)
-        print(cand)
-        return self.password == cand
+        return bcrypt.check_password_hash(self.password, pwd)
 
     @staticmethod
     def hash_pwd(pwd):
-        # if isinstance(pwd, unicode):
-        #     pwd = pwd.encode('u8')
-        # pwd = str(pwd)
-        return bcrypt.hashpw(pwd, bcrypt.gensalt(12))
+        return bcrypt.generate_password_hash(pwd)
 
     def is_active(self):
         return True
