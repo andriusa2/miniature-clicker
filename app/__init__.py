@@ -10,7 +10,7 @@ from flask.ext.bcrypt import Bcrypt
 
 app = Flask(__name__)
 app.config.from_object('config')
-
+app.jinja_env.globals['DB_link'] = app.config['SQLALCHEMY_DATABASE_URI']
 login_manager = LoginManager(app=app)
 
 db = SQLAlchemy(app)
